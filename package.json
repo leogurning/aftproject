@@ -1,0 +1,33 @@
+{
+  "name": "aftproject",
+  "version": "1.0.0",
+  "description": "Project Time Forecast",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "*",
+    "express": "*",
+    "morgan": "*",
+    "mongoose": "*",
+    "mongoose-aggregate-paginate": "*",
+    "mongoose-paginate": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leogurning/aftproject.git"
+  },
+  "author": "Leonard Gurning",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leogurning/aftproject/issues"
+  },
+  "homepage": "https://github.com/leogurning/aftproject#readme",
+  "devDependencies": {
+    "eslint": "^5.14.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0"
+  }
+}
