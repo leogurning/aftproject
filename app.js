@@ -8,6 +8,7 @@ const config = require('./config');
 const port = process.env.PORT || config.serverport;
 
 const projects = require('./routes/projects.js');
+const msconfig = require('./routes/msconfig.js');
 
 mongoose.connect(config.database, {
   useNewUrlParser: true,
@@ -48,6 +49,8 @@ const apiRoutes = express.Router();
 app.use('/api', apiRoutes);
 
 apiRoutes.post('/report', projects.projectsaggreport);
+apiRoutes.get('/dept/list', msconfig.getDeptListRouterHandler); // API returns Dept List
+apiRoutes.get('/camp/list', msconfig.getCampListRouterHandler); // API returns Camp List
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
