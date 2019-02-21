@@ -30,55 +30,87 @@
           </div>
 
       </form>
+      <div *ngIf="this.isscrolling == true" class="datescrollinfo"> {{ this.scrollinfodate }}</div>
       <div *ngIf="!projects || totalrows <= 0">
-          <h5>No Project found</h5>   
+        <div class="tableFixHead">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" width="3%">#</th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Department')">Departement</a></th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Camp')">Camp</a></th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Project')">Project</a></th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Employer')">Employer</a></th>
+                        <th class="datanumber" scope="col" width="15%"><a (click)="sortProjects('NumberOfPeople')">No. People</a></th>
+                        <th *ngFor='let dt of datetable; let idx = index' scope="col" width="5%">{{ dt.dateStr }}</th>
+                        <!-- <th scope="col" width="40%">Forecast</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="15"><h5>No Project found</h5></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
       </div>
       <div *ngIf="projects && totalrows > 0">
-          <label for="result"> Result: {{ totalrows }} Projects</label>
-
-          <div class="tableFixHead">
-              <table class="table">
-                  <thead>
-                      <tr>
-                          <th scope="col" width="3%">#</th>
-                          <th scope="col" width="12%"><a (click)="sortProjects('Department')">Departement</a></th>
-                          <th scope="col" width="12%"><a (click)="sortProjects('Camp')">Camp</a></th>
-                          <th scope="col" width="12%"><a (click)="sortProjects('Project')">Project</a></th>
-                          <th scope="col" width="12%"><a (click)="sortProjects('Employer')">Employer</a></th>
-                          <th scope="col" width="10%"><a (click)="sortProjects('NumberOfPeople')">No. People</a></th>
-                          <th scope="col" width="40%">Forecast</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr *ngFor='let p of projects; let pIndex = index'>
-                          <td scope="row" data-label="No">{{ ((qpage - 1) * 500) + (pIndex + 1) }}</td>
-                          <td data-label="Department">{{ p.Department }}</td>
-                          <td data-label="Camp">{{ p.Camp }}</td>
-                          <td data-label="Project">{{ p.Project }}</td>
-                          <td data-label="Employer">{{ p.Employer }}</td>
-                          <td data-label="No. People">{{ p.NumberOfPeople }}</td>
-                          <td data-label="Forecast">IN: {{ p.FirstNight }},&nbsp;OUT: {{ p.LastNight }} &nbsp;&nbsp; {{ p.NumberOfNights }} Nights</td>
-                      </tr>
-                      
-                  </tbody>
-              </table>
-          </div>
-          <div *ngIf="projects && totalrows > 100">
-              
-                <ul class="pagination">
-                    <li class="page-item" [ngClass]="{'disabled': qpage == 1 }">
-                        <a class="page-link" (click) = "prevPage()">&laquo;</a>
-                      </li>
-                    <li class="page-item" *ngFor="let item of createPager(pgCounter); let idx = index" [ngClass]="{'active': qpage == idx + 1 }">
-                        <a  class="page-link" (click) = "setPage(idx + 1)">{{ idx + 1 }}</a>
-                    </li>
-                    <li class="page-item" [ngClass]="{'disabled': qpage == totalpage}">
-                        <a class="page-link" (click) = "nextPage()">&raquo;</a>
-                      </li>
-                </ul>
+        <label for="result"> Result: {{ totalrows }} Projects</label>
+        <div class="tableFixHead">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" width="3%">#</th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Department')">Departement</a></th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Camp')">Camp</a></th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Project')">Project</a></th>
+                        <th scope="col" width="12%"><a (click)="sortProjects('Employer')">Employer</a></th>
+                        <th class="datanumber" scope="col" width="15%"><a (click)="sortProjects('NumberOfPeople')">No. People</a></th>
+                        <th *ngFor='let dt of datetable; let idx = index' scope="col" width="5%">{{ dt.dateStr }}</th>
+                        <!-- <th scope="col" width="40%">Forecast</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let p of projects; let pIndex = index'>
+                        <td scope="row" data-label="No">{{ ((qpage - 1) * 500) + (pIndex + 1) }}</td>
+                        <td data-label="Department">{{ p.Department }}</td>
+                        <td data-label="Camp">{{ p.Camp }}</td>
+                        <td data-label="Project">{{ p.Project }}</td>
+                        <td data-label="Employer">{{ p.Employer }}</td>
+                        <td class="datanumber" data-label="No. People">{{ p.NumberOfPeople }}</td>
+                        <td *ngFor='let f of p.fcastarray; let idx = index'
+                            [colSpan]="f.cspan">
+                            <span [ngClass]="{ 'datebar': f.isfcast }">
+                                <!-- {{ f.cspan }} -->
+                                <div class="blockbar" *ngIf="f.isfcast">
+                                        {{ f.message }}
+                                </div>
+                            </span>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="projects && totalrows > 100">
             
-          </div>
-  
+            <ul class="pagination">
+                <li class="page-item" [ngClass]="{'disabled': qpage == 1 }">
+                    <a class="page-link" (click) = "prevPage()">&laquo;</a>
+                </li>
+                <li class="page-item" *ngFor="let item of createPager(pgCounter); let idx = index" [ngClass]="{'active': qpage == idx + 1 }">
+                    <a  class="page-link" (click) = "setPage(idx + 1)">{{ idx + 1 }}</a>
+                </li>
+                <li class="page-item" [ngClass]="{'disabled': qpage == totalpage}">
+                    <a class="page-link" (click) = "nextPage()">&raquo;</a>
+                </li>
+            </ul>
+        </div>
       </div>
+      <div class="hscrollcontainer" (scroll)="onScroll($event)">
+            <div class="content">
+                <span *ngFor='let d of datelist; let idx = index'>{{ d.date }}</span>
+            </div>
+     </div>
   </div>
 </div>

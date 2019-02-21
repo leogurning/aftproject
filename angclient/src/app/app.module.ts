@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /* common Modules */
 import { ToastrService } from './common/toastr.service';
+import { DatePipe } from '@angular/common';
 
 /* Root Modules */
 import { AppComponent } from './app.component';
@@ -42,6 +43,7 @@ import { ProjectsService } from './services/projects.service';
   providers: [
     ToastrService,
     ProjectsService,
+    DatePipe,
   ],
   bootstrap: [AppComponent]
 })

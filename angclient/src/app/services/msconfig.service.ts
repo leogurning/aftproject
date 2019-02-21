@@ -34,6 +34,28 @@ export class MsconfigService {
         catchError(this.handleError));
   }
 
+  getDateList(oBodyparam) {
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http.post(`${this.mainapihosturl}/date/list`, JSON.stringify(oBodyparam), options)
+        .pipe(map((response: Response) => response.json()),
+        catchError(this.handleError));
+  }
+
+  getDateTable(oBodyparam) {
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http.post(`${this.mainapihosturl}/date/table`, JSON.stringify(oBodyparam), options)
+        .pipe(map((response: Response) => response.json()),
+        catchError(this.handleError));
+  }
+
   private handleError(error: Response) {
     const stdErrMsg = `Ooops sorry...a server error occured. Please try again shortly. <br>`;
     const errMsg = error.status ? `${stdErrMsg} ${'Error: &nbsp;' + error.status} - ${error.statusText}` : stdErrMsg;

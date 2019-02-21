@@ -1,5 +1,23 @@
 const Depts = require('../models/dept');
 const Camps = require('../models/camp');
+const config = require('../config.js');
+
+function formatDateToStr(date) {
+  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const monthNames = [
+    'Jan', 'Feb', 'Mar',
+    'Apr', 'May', 'Jun', 'Jul',
+    'Aug', 'Sep', 'Oct',
+    'Nov', 'Dec',
+  ];
+  const dayOfWeekIndex = date.getDay();
+  // return `${dayNames[dayOfWeekIndex]} ${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${(`0${date.getDate()}`).slice(-2)}`;
+  return `${dayNames[dayOfWeekIndex]}, ${(`0${date.getDate()}`).slice(-2)} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+function formatDateToIdxStr(date) {
+  return `${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${(`0${date.getDate()}`).slice(-2)}`;
+}
 
 exports.getdeptlist = ({ query }, cb) => {
   // returns artists records based on query
@@ -35,4 +53,58 @@ exports.getcamplist = ({ query }, cb) => {
     }
     cb(null, result);
   });
+};
+
+exports.getlistdates = (startdate, enddate) => {
+  // const enddate = new Date();
+  // const startdate = new Date(Date.UTC(2018, 0, 1));
+  const start = new Date(startdate);
+  const end = new Date(enddate);
+  const daysOfYear = [];
+  let dateObj; let dat;
+  for (let d = start; d <= end; d.setDate(d.getDate() + 1)) {
+    dat = new Date(d);
+    dateObj = {
+      date: formatDateToIdxStr(dat),
+      dateStr: formatDateToStr(dat),
+    };
+    daysOfYear.push(dateObj);
+  }
+  return daysOfYear;
+};
+/*
+exports.getlisttabledates = (days) => {
+  const start = new Date();
+  const result = [];
+  let dateObj; let dat;
+  for (let i = 0; i < days; i += 1) {
+    dat = new Date(start);
+    dateObj = {
+      date: dat,
+      dateStr: formatDateToStr(dat),
+    };
+    result.push(dateObj);
+    start.setDate(start.getDate() + 1);
+  }
+  return result;
+};
+*/
+
+exports.getlisttabledates = (startdate, days) => {
+  // const start = new Date(startdate);
+  const start = config.formatUTCStartDate(new Date(startdate));
+  const result = [];
+  let dateObj; let dat;
+
+  for (let i = 0; i < days; i += 1) {
+    dat = new Date(start);
+    dateObj = {
+      datetime: dat,
+      date: formatDateToIdxStr(dat),
+      dateStr: formatDateToStr(dat),
+    };
+    result.push(dateObj);
+    start.setDate(start.getDate() + 1);
+  }
+  return result;
 };

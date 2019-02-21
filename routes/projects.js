@@ -1,8 +1,10 @@
 const Projects = require('../controllers/project');
+const config = require('../config.js');
 
 exports.projectsaggreport = (req, res) => {
   const deptid = req.body.deptid || req.query.deptid;
   const campid = req.body.campid || req.query.campid;
+  const { startdate, days } = req.body;
 
   let limit = parseInt(req.query.limit, 10);
   let page = parseInt(req.body.page || req.query.page, 10);
@@ -16,20 +18,34 @@ exports.projectsaggreport = (req, res) => {
   if (!page || page < 1) {
     page = 1;
   }
-  if (!deptid) {
+  if (!deptid || !startdate || !days) {
     res.status(202).send({ success: false, message: 'Parameter data is not correct or incompleted.' });
     return;
   }
   // returns projects records based on query
+  const qstartdate = config.formatUTCStartDate(new Date(startdate));
+  const inputstartdate = new Date(startdate);
+  const inputstartdateUTC = config.formatUTCStartDate(inputstartdate);
+  const newDate = new Date(inputstartdateUTC.setTime(inputstartdateUTC.getTime() + days * 86400000));
+  const inputenddateUTC = config.formatUTCStartDate(newDate);
+
   query = {
     Department: deptid,
+    $or: [
+      {
+        FirstNightDate: { $gte: qstartdate, $lte: inputenddateUTC },
+      },
+      {
+        LastNightDate: { $gte: qstartdate, $lte: inputenddateUTC },
+      },
+    ],
   };
 
   if (campid) {
     query = Object.assign(query, { Camp: campid });
   }
 
-  Projects.listprojects1({
+  Projects.listprojects2({
     query, limit, page, sortby,
   }, (err, results, pageCount, count) => {
     if (err) { return res.status(202).send({ success: false, message: err }); }

@@ -13,6 +13,8 @@ const ProjectSchema = new Schema({
   FirstNight: { type: String, required: true },
   LastNight: { type: String, required: true },
   NumberOfPeople: { type: Number, required: true },
+  FirstNightDate: { type: Date },
+  LastNightDate: { type: Date },
 });
 
 ProjectSchema.plugin(mongoosePaginate);

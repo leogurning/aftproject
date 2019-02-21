@@ -51,6 +51,8 @@ app.use('/api', apiRoutes);
 apiRoutes.post('/report', projects.projectsaggreport);
 apiRoutes.get('/dept/list', msconfig.getDeptListRouterHandler); // API returns Dept List
 apiRoutes.get('/camp/list', msconfig.getCampListRouterHandler); // API returns Camp List
+apiRoutes.post('/date/list', msconfig.getlistdatesRouterHandler); // API returns Table List
+apiRoutes.post('/date/table', msconfig.getlisttabledatesRouterHandler); // API returns Camp List
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));

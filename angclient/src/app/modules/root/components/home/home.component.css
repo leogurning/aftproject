@@ -2,3 +2,14 @@ h1, h2, h3, h4 {
     font-weight: bold;
     letter-spacing: 2px;
   }
+
+.surroundContainer {
+  height: 500px;
+  overflow: auto;
+}
+
+.hPage {
+  display: inline-block;
+  width: 50%;
+  height: 100%;
+}
