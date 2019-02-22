@@ -23,6 +23,28 @@ export class ProjectsService {
         catchError(this.handleError));
   }
 
+  updateProject(pid, oBodyparam) {
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http.put(this.mainapihosturl + `/project/${pid}`, JSON.stringify(oBodyparam), options)
+      .pipe(map((response: Response) => response.json()),
+      catchError(this.handleError));
+  }
+
+  getProject(id) {
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http.get(this.mainapihosturl + `/project/${id}`, options)
+        .pipe(map((response: Response) => response.json()),
+        catchError(this.handleError));
+  }
+
   private handleError(error: Response) {
     const stdErrMsg = `Ooops sorry...a server error occured. Please try again shortly. <br>`;
     const errMsg = error.status ? `${stdErrMsg} ${'Error: &nbsp;' + error.status} - ${error.statusText}` : stdErrMsg;

@@ -42,8 +42,10 @@
                         <th scope="col" width="12%"><a (click)="sortProjects('Project')">Project</a></th>
                         <th scope="col" width="12%"><a (click)="sortProjects('Employer')">Employer</a></th>
                         <th class="datanumber" scope="col" width="15%"><a (click)="sortProjects('NumberOfPeople')">No. People</a></th>
-                        <th *ngFor='let dt of datetable; let idx = index' scope="col" width="5%">{{ dt.dateStr }}</th>
-                        <!-- <th scope="col" width="40%">Forecast</th> -->
+                        <th *ngFor='let dt of datetable; let idx = index' scope="col">
+                                {{ dt.dobj.pday }},<br> {{ dt.dobj.pdate }} <br>
+                                {{ dt.dobj.pmonth }}<br> {{ dt.dobj.pyear }}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,8 +68,10 @@
                         <th scope="col" width="12%"><a (click)="sortProjects('Project')">Project</a></th>
                         <th scope="col" width="12%"><a (click)="sortProjects('Employer')">Employer</a></th>
                         <th class="datanumber" scope="col" width="15%"><a (click)="sortProjects('NumberOfPeople')">No. People</a></th>
-                        <th *ngFor='let dt of datetable; let idx = index' scope="col" width="5%">{{ dt.dateStr }}</th>
-                        <!-- <th scope="col" width="40%">Forecast</th> -->
+                        <th *ngFor='let dt of datetable; let idx = index' scope="col">
+                            {{ dt.dobj.pday }},<br> {{ dt.dobj.pdate }} <br>
+                            {{ dt.dobj.pmonth }}<br> {{ dt.dobj.pyear }}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,7 +86,7 @@
                             [colSpan]="f.cspan">
                             <span [ngClass]="{ 'datebar': f.isfcast }">
                                 <!-- {{ f.cspan }} -->
-                                <div class="blockbar" *ngIf="f.isfcast">
+                                <div class="blockbar" *ngIf="f.isfcast" (click)="goToEdit(p._id)">
                                         {{ f.message }}
                                 </div>
                             </span>

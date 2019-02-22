@@ -41,7 +41,7 @@ app.use(morgan('dev'));
 
 // basic routes
 app.get('/', (req, res) => {
-  res.send(`Kaxet API is running at PORT:${port}/api`);
+  res.send(`AFT API is running at PORT:${port}/api`);
 });
 
 // express router
@@ -51,8 +51,10 @@ app.use('/api', apiRoutes);
 apiRoutes.post('/report', projects.projectsaggreport);
 apiRoutes.get('/dept/list', msconfig.getDeptListRouterHandler); // API returns Dept List
 apiRoutes.get('/camp/list', msconfig.getCampListRouterHandler); // API returns Camp List
-apiRoutes.post('/date/list', msconfig.getlistdatesRouterHandler); // API returns Table List
-apiRoutes.post('/date/table', msconfig.getlisttabledatesRouterHandler); // API returns Camp List
+apiRoutes.post('/date/list', msconfig.getlistdatesRouterHandler); // API returns Date List
+apiRoutes.post('/date/table', msconfig.getlisttabledatesRouterHandler); // API returns Date table List
+apiRoutes.put('/project/:id', projects.updateprojectRouterHandler); // API to update project data
+apiRoutes.get('/project/:id', projects.getprojectRouterHandler); // API returns project details
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
@@ -61,4 +63,4 @@ app.get('*', (req, res) => {
 // kick off the server
 app.listen(port);
 
-console.log(`Kaxet app is listening at PORT:${port}`);
+console.log(`AFT app is listening at PORT:${port}`);

@@ -2,17 +2,30 @@ const Depts = require('../models/dept');
 const Camps = require('../models/camp');
 const config = require('../config.js');
 
+const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const monthNames = [
+  'Jan', 'Feb', 'Mar',
+  'Apr', 'May', 'Jun', 'Jul',
+  'Aug', 'Sep', 'Oct',
+  'Nov', 'Dec',
+];
+
 function formatDateToStr(date) {
-  const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const monthNames = [
-    'Jan', 'Feb', 'Mar',
-    'Apr', 'May', 'Jun', 'Jul',
-    'Aug', 'Sep', 'Oct',
-    'Nov', 'Dec',
-  ];
   const dayOfWeekIndex = date.getDay();
+  // console.log(dayOfWeekIndex);
   // return `${dayNames[dayOfWeekIndex]} ${date.getFullYear()}-${(`0${date.getMonth() + 1}`).slice(-2)}-${(`0${date.getDate()}`).slice(-2)}`;
   return `${dayNames[dayOfWeekIndex]}, ${(`0${date.getDate()}`).slice(-2)} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+function formatDateToObj(date) {
+  const dayOfWeekIndex = date.getDay();
+  const dobj = {
+    pday: dayNames[dayOfWeekIndex],
+    pdate: (`0${date.getDate()}`).slice(-2),
+    pmonth: monthNames[date.getMonth()],
+    pyear: date.getFullYear(),
+  };
+  return dobj;
 }
 
 function formatDateToIdxStr(date) {
@@ -102,6 +115,7 @@ exports.getlisttabledates = (startdate, days) => {
       datetime: dat,
       date: formatDateToIdxStr(dat),
       dateStr: formatDateToStr(dat),
+      dobj: formatDateToObj(dat),
     };
     result.push(dateObj);
     start.setDate(start.getDate() + 1);

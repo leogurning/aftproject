@@ -1,0 +1,7 @@
+.custom-content {
+    position: absolute;
+    z-index: 1081;
+    top: 390px;
+    cursor: pointer;
+    align-self: center;
+  }

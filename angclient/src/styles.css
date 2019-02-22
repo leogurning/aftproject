@@ -318,6 +318,7 @@ html, body {
     background: #18c145;
     margin: 2%;
     border-radius:2px;
+    cursor: pointer;
   }
 
   .datescrollinfo{

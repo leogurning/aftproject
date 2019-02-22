@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { DisablecontrolDirective } from '../../directives/disablecontrol.directive';
 import { GeneralConfirmationComponent } from './components/general-confirmation/general-confirmation.component';
@@ -10,6 +11,7 @@ import { GeneralConfirmationComponent } from './components/general-confirmation/
   declarations: [DisablecontrolDirective, GeneralConfirmationComponent],
   imports: [
     ModalModule.forRoot(),
+    BsDatepickerModule.forRoot(),
     NgxLoadingModule.forRoot({
       animationType: ngxLoadingAnimationTypes.threeBounce,
       backdropBackgroundColour: 'rgba(0,0,0,0.1)',
@@ -28,6 +30,7 @@ import { GeneralConfirmationComponent } from './components/general-confirmation/
     FormsModule,
     ReactiveFormsModule,
     ModalModule,
+    BsDatepickerModule,
     NgxLoadingModule,
     DisablecontrolDirective,
     GeneralConfirmationComponent

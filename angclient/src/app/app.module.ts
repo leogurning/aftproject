@@ -14,6 +14,7 @@ import { NavbarComponent } from './modules/root/components/navbar/navbar.compone
 import { FooterComponent } from './modules/root/components/footer/footer.component';
 import { ErrorpageComponent } from './modules/root/components/errorpage/errorpage.component';
 import { PagenotfoundComponent } from './modules/root/components/pagenotfound/pagenotfound.component';
+import { EditprojectdataComponent } from './modules/root/components/editprojectdata/editprojectdata.component';
 
 /* Root routing module */
 import { AppRoutingModule } from './app-routing.module';
@@ -32,6 +33,7 @@ import { ProjectsService } from './services/projects.service';
     FooterComponent,
     ErrorpageComponent,
     PagenotfoundComponent,
+    EditprojectdataComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +46,9 @@ import { ProjectsService } from './services/projects.service';
     ToastrService,
     ProjectsService,
     DatePipe,
+  ],
+  entryComponents: [
+    EditprojectdataComponent
   ],
   bootstrap: [AppComponent]
 })

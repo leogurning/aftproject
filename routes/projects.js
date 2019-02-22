@@ -64,6 +64,59 @@ exports.projectsaggreport = (req, res) => {
   });
 };
 
+exports.getprojectRouterHandler = (req, res) => {
+  const pid = req.params.id;
+
+  Projects.getproject(pid, (err, result) => {
+    if (err) {
+      return res.status(202).json({ success: false, message: err });
+    }
+    if (result) {
+      return res.status(200).json({
+        success: true,
+        data: result,
+      });
+    }
+    return res.status(201).json({
+      success: false,
+      message: 'Error undefined result. Please try again.',
+    });
+  });
+};
+
+exports.updateprojectRouterHandler = (req, res) => {
+  const pid = req.params.id;
+  const {
+    campid, projectid, employerid, noofpeople, firstnight, lastnight,
+    firstnightstr, lastnightstr,
+  } = req.body;
+
+  Projects.updateproject(pid, {
+    campid,
+    projectid,
+    employerid,
+    noofpeople,
+    firstnightstr,
+    lastnightstr,
+    firstnight,
+    lastnight,
+  }, (err, result) => {
+    if (err) {
+      return res.status(202).json({ success: false, message: err });
+    }
+    if (result) {
+      return res.status(200).json({
+        success: true,
+        data: result,
+        message: 'Project updated successfully.',
+      });
+    }
+    return res.status(201).json({
+      success: false,
+      message: 'Error undefined result. Please try again.',
+    });
+  });
+};
 /*
 exports.projectsaggreport = (req, res) => {
   const deptid = req.body.deptid || req.query.deptid;

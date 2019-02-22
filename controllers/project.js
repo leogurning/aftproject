@@ -1,6 +1,52 @@
 const Projects = require('../models/project');
 const config = require('../config.js');
 
+exports.updateproject = (pid, {
+  campid, projectid, employerid, noofpeople, firstnight, lastnight,
+  firstnightstr, lastnightstr,
+}, cb) => {
+  // || !firstnight || !lastnight
+  if (!pid || !campid || !projectid || !employerid
+     || !noofpeople || !firstnight || !lastnight
+     || !firstnightstr || !lastnightstr) {
+    cb('Posted data is not correct or incompleted.', null);
+    return;
+  }
+  const query = {
+    _id: pid,
+  };
+
+  const doc = {
+    Camp: campid,
+    Project: projectid,
+    Employer: employerid,
+    FirstNight: firstnightstr,
+    LastNight: lastnightstr,
+    FirstNightDate: firstnight,
+    LastNightDate: lastnight,
+    NumberOfPeople: noofpeople,
+  };
+
+  Projects.findOneAndUpdate(query, doc, (err, raw) => {
+    if (err) {
+      cb(`Error processing request 101 ${err}`, null);
+      return;
+    }
+    cb(null, raw);
+  });
+};
+
+exports.getproject = (id, cb) => {
+  Projects.findOne({ _id: id }).exec((err, project) => {
+    if (err) {
+      cb(`Error processing request ${err}`, null);
+      return;
+    }
+    cb(null, project);
+  });
+};
+
+
 exports.listprojects = ({
   query, limit, page, sortby,
 }, cb) => {
@@ -123,30 +169,7 @@ exports.listprojects2 = ({
     page,
     limit,
   };
-  /*
-  const oproject = {
-    Id: 1,
-    Department: 1,
-    Camp: 1,
-    Project: 1,
-    Employer: 1,
-    NumberOfPeople: 1,
-    FirstNight: 1,
-    LastNight: 1,
-    FirstNightDate: 1,
-    LastNightDate: 1,
-    NumberOfNights: {
-      $ceil: {
-        $add: [{
-          $divide: [{ $subtract: ['$LastNightDate', '$FirstNightDate'] },
-            86400000,
-          ],
-        }, 1,
-        ],
-      },
-    },
-  };
-  */
+
   const oproject = {
     Id: 1,
     Department: 1,

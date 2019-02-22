@@ -5,6 +5,10 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ToastrService } from '../../../../common/toastr.service';
 import { ProjectsService } from '../../../../services/projects.service';
 import { MsconfigService } from '../../../../services/msconfig.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { Subscription } from 'rxjs';
+import { EditprojectdataComponent } from '../editprojectdata/editprojectdata.component';
 
 @Component({
   selector: 'app-home',
@@ -32,6 +36,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isscrolling = false;
   scrollinfodate: string;
   isfirst = true;
+  subscriptions: Subscription[] = [];
+  modalRef: BsModalRef;
 
   @ViewChild('inputdeptRef') inputdeptElementRef: ElementRef;
 
@@ -41,7 +47,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private datePipe: DatePipe ) {
+    private datePipe: DatePipe,
+    private modalService: BsModalService ) {
       this.currDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     }
 
@@ -382,5 +389,34 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     });
     return result;
+  }
+
+  goToEdit(id): void {
+    // alert('edit this data: ' + id);
+    this.subscriptions.push(
+      this.modalService.onHide.subscribe((reason: string) => {
+        // refresh table
+        this.refreshTable(this.isfirst);
+        this.unsubscribe();
+      })
+    );
+
+    this.modalRef = this.modalService.show(EditprojectdataComponent, {
+      // class: 'modal-dialog-centered',
+      keyboard: false,
+      backdrop: 'static',
+      initialState: {
+        title: 'Edit Project',
+        pid: id,
+        data: {}
+      }
+    });
+  }
+
+  unsubscribe() {
+    this.subscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
+    this.subscriptions = [];
   }
 }
