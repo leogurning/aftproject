@@ -38,6 +38,16 @@ exports.projectsaggreport = (req, res) => {
       {
         LastNightDate: { $gte: qstartdate, $lte: inputenddateUTC },
       },
+      {
+        $and: [
+          {
+            FirstNightDate: { $lte: qstartdate },
+          },
+          {
+            LastNightDate: { $gte: inputenddateUTC },
+          },
+        ],
+      },
     ],
   };
   console.log(qstartdate);
