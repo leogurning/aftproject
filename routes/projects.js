@@ -33,10 +33,10 @@ exports.projectsaggreport = (req, res) => {
     Department: deptid,
     $or: [
       {
-        FirstNightDate: { $gte: qstartdate, $lte: inputenddateUTC },
+        FirstNightDate: { $gte: qstartdate, $lt: inputenddateUTC },
       },
       {
-        LastNightDate: { $gte: qstartdate, $lte: inputenddateUTC },
+        LastNightDate: { $gte: qstartdate, $lt: inputenddateUTC },
       },
     ],
   };
