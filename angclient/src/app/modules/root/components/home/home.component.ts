@@ -73,10 +73,41 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.route.queryParams.forEach((params: Params) => {
+      this.qdeptid = params['deptid'] || '';
+      this.qcampid = params['campid'] || '';
+      this.qpage = params['page'] || '1';
+      this.qsort = params['sortby'] || '';
+      this.getDeptInputList((errord, resultd) => {
+        if (errord) {
+          this.deptlist = [{DeptId: '', DeptName: errord}];
+          this.camplist = [{CampId: '', CampName: errord}];
+        } else {
+          this.deptlist = resultd;
+          this.getCampInputList((errorc, resultc) => {
+            if (errorc) { this.camplist = [{CampId: '', CampName: errorc}];
+            } else { this.camplist = resultc; }
+          });
+          this.getHzDateTable(this.isfirst, (error, result) => {
+            if (error) {
+              this.datetable = [{date: '', dateStr: error}];
+            } else {
+              this.datetable = result;
+              this.refreshTable(this.isfirst);
+            }
+          });
+        }
+      });
+      this.searchForm.patchValue({
+        deptid: this.qdeptid,
+        campid: this.qcampid,
+      });
+    });
+
   }
 
   ngAfterViewInit() {
-    this.refreshDateColumn();
+    this.inputdeptElementRef.nativeElement.focus();
   }
 
   refreshDateColumn() {
@@ -85,26 +116,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.datetable = [{date: '', dateStr: error}];
       } else {
         this.datetable = result;
-
-        this.route.queryParams.forEach((params: Params) => {
-          this.qdeptid = params['deptid'] || '';
-          this.qcampid = params['campid'] || '';
-          this.qpage = params['page'] || '1';
-          this.qsort = params['sortby'] || '';
-          this.getDeptInputList((errord, resultd) => {
-            if (errord) {
-              this.deptlist = [{DeptId: '', DeptName: errord}];
-              this.camplist = [{CampId: '', CampName: errord}];
-            } else {
-              this.deptlist = resultd;
-              this.getCampInputList((errorc, resultc) => {
-                if (errorc) { this.camplist = [{CampId: '', CampName: errorc}];
-                } else { this.camplist = resultc; }
-              });
-              this.refreshTable(this.isfirst);
-            }
-          });
-        });
+        this.refreshTable(this.isfirst);
       }
     });
   }
@@ -333,7 +345,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.scrolldate = scrDate;
       // console.log(`idx: ${idx} out of ${totalItem}. Selected date: ${selDate}`);
       this.refreshDateColumn();
-    }, 250);
+    }, 1000);
   }
 
   checkDateCol(input, startdate, enddate) {
