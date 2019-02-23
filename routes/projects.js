@@ -24,6 +24,7 @@ exports.projectsaggreport = (req, res) => {
   }
   // returns projects records based on query
   const qstartdate = config.formatUTCStartDate(new Date(startdate));
+  // const qstartdate = new Date(startdate);
   const inputstartdate = new Date(startdate);
   const newDate = new Date(inputstartdate.setTime(inputstartdate.getTime() + (days - 1) * 86400000));
   const inputenddateUTC = config.formatUTCStartDate(newDate);
@@ -39,7 +40,8 @@ exports.projectsaggreport = (req, res) => {
       },
     ],
   };
-
+  console.log(qstartdate);
+  console.log(inputstartdate);
   if (campid) {
     query = Object.assign(query, { Camp: campid });
   }
