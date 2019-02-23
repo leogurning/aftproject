@@ -40,6 +40,9 @@ exports.projectsaggreport = (req, res) => {
       },
     ],
   };
+  console.log(qstartdate);
+  console.log(inputenddateUTC);
+  console.log(query);
 
   if (campid) {
     query = Object.assign(query, { Camp: campid });
