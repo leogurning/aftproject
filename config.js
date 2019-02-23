@@ -10,8 +10,8 @@ module.exports = {
     const dt = d.getUTCDate();
     const mo = d.getUTCMonth();
     const yr = d.getUTCFullYear();
-    // const dateUTC = new Date(Date.UTC(yr, mo, dt));
-    const dateUTC = new Date(yr, mo, dt);
+    const dateUTC = new Date(Date.UTC(yr, mo, dt));
+    // const dateUTC = new Date(yr, mo, dt);
     dateUTC.setHours(0);
     return dateUTC;
   },
@@ -19,8 +19,8 @@ module.exports = {
     const dt = d.getUTCDate();
     const mo = d.getUTCMonth();
     const yr = d.getUTCFullYear();
-    // const dateUTC = new Date(Date.UTC(yr, mo, dt));
-    const dateUTC = new Date(yr, mo, dt);
+    const dateUTC = new Date(Date.UTC(yr, mo, dt));
+    // const dateUTC = new Date(yr, mo, dt);
     dateUTC.setHours(23);
     dateUTC.setMinutes(59);
     dateUTC.setSeconds(59);

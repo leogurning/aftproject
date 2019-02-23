@@ -28,7 +28,7 @@ exports.projectsaggreport = (req, res) => {
   // const inputstartdateUTC = config.formatUTCStartDate(inputstartdate);
   // const newDate = new Date(inputstartdateUTC.setTime(inputstartdateUTC.getTime() + days * 86400000));
   // const inputenddateUTC = config.formatUTCStartDate(newDate);
-  const newDate = new Date(inputstartdate.setTime(inputstartdate.getTime() + days * 86400000));
+  const newDate = new Date(inputstartdate.setTime(inputstartdate.getTime() + (days - 1) * 86400000));
   const inputenddateUTC = config.formatUTCStartDate(newDate);
 
   query = {
