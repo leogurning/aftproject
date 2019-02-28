@@ -1,7 +1,7 @@
 module.exports = {
   serverport: 2000,
   secret: '!$3cret4@uth',
-  database: 'mongodb+srv://lenomatteo:IniLeno01@lenocluster0-s2nns.mongodb.net/aftDb?ssl=true&authSource=admin&retryWrites=true',
+  database: 'mongodb+srv://guest:IniGuest01@lenocluster0-s2nns.mongodb.net/aftDb?ssl=true&authSource=admin&retryWrites=true',
 
   formatStrDate(strdate) {
     return `${strdate.slice(6, 10)}-${strdate.slice(3, 5)}-${strdate.slice(0, 2)}`;
