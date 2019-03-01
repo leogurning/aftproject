@@ -11,7 +11,7 @@ module.exports = {
     const mo = d.getUTCMonth();
     const yr = d.getUTCFullYear();
     const dateUTC = new Date(Date.UTC(yr, mo, dt));
-    dateUTC.setHours(0);
+    // dateUTC.setHours(0);
     return dateUTC;
   },
   formatUTCEndDate(d) {

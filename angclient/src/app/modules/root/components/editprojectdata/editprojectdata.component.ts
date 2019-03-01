@@ -137,9 +137,9 @@ export class EditprojectdataComponent implements OnInit {
 
 function formatUTCStartDate(d) {
   const inputdt = new Date(d);
-  const dt = inputdt.getUTCDate();
-  const mo = inputdt.getUTCMonth();
-  const yr = inputdt.getUTCFullYear();
+  const dt = inputdt.getDate();
+  const mo = inputdt.getMonth();
+  const yr = inputdt.getFullYear();
   const dateUTC = new Date(Date.UTC(yr, mo, dt));
   dateUTC.setHours(0);
   return dateUTC;
