@@ -128,6 +128,33 @@ exports.updateprojectRouterHandler = (req, res) => {
     });
   });
 };
+
+exports.updateprojecttimeRouterHandler = (req, res) => {
+  const pid = req.params.id;
+  const {
+    firstnightstr, lastnightstr,
+  } = req.body;
+
+  Projects.updateprojecttime(pid, {
+    firstnightstr,
+    lastnightstr,
+  }, (err, result) => {
+    if (err) {
+      return res.status(202).json({ success: false, message: err });
+    }
+    if (result) {
+      return res.status(200).json({
+        success: true,
+        data: result,
+        message: 'Project time updated successfully.',
+      });
+    }
+    return res.status(201).json({
+      success: false,
+      message: 'Error undefined result. Please try again.',
+    });
+  });
+};
 /*
 exports.projectsaggreport = (req, res) => {
   const deptid = req.body.deptid || req.query.deptid;

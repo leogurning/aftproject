@@ -34,6 +34,17 @@ export class ProjectsService {
       catchError(this.handleError));
   }
 
+  updateProjecttime(pid, oBodyparam) {
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http.put(this.mainapihosturl + `/project/time/${pid}`, JSON.stringify(oBodyparam), options)
+      .pipe(map((response: Response) => response.json()),
+      catchError(this.handleError));
+  }
+
   getProject(id) {
 
     const headers = new Headers();

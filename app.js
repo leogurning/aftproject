@@ -54,6 +54,7 @@ apiRoutes.get('/camp/list', msconfig.getCampListRouterHandler); // API returns C
 apiRoutes.post('/date/list', msconfig.getlistdatesRouterHandler); // API returns Date List
 apiRoutes.post('/date/table', msconfig.getlisttabledatesRouterHandler); // API returns Date table List
 apiRoutes.put('/project/:id', projects.updateprojectRouterHandler); // API to update project data
+apiRoutes.put('/project/time/:id', projects.updateprojecttimeRouterHandler); // API to update project time
 apiRoutes.get('/project/:id', projects.getprojectRouterHandler); // API returns project details
 
 app.get('*', (req, res) => {

@@ -56,6 +56,14 @@ export class MsconfigService {
         catchError(this.handleError));
   }
 
+  formatStrDate(d) {
+    const inputdt = new Date(d);
+    const dt = (`0${inputdt.getDate()}`).slice(-2);
+    const mo = (`0${inputdt.getMonth() + 1}`).slice(-2);
+    const yr = inputdt.getFullYear();
+    return `${dt}/${mo}/${yr}`;
+  }
+
   private handleError(error: Response) {
     const stdErrMsg = `Ooops sorry...a server error occured. Please try again shortly. <br>`;
     const errMsg = error.status ? `${stdErrMsg} ${'Error: &nbsp;' + error.status} - ${error.statusText}` : stdErrMsg;

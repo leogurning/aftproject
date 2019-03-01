@@ -5,10 +5,17 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ToastrService } from '../../../../common/toastr.service';
 import { ProjectsService } from '../../../../services/projects.service';
 import { MsconfigService } from '../../../../services/msconfig.service';
+import { GanttService } from '../../../../services/gantt.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { Subscription } from 'rxjs';
 import { EditprojectdataComponent } from '../editprojectdata/editprojectdata.component';
+import { EditprojecttimeComponent } from '../editprojecttime/editprojecttime.component';
+import 'dhtmlx-gantt';
+import 'dhtmlx-gantt/codebase/ext/dhtmlxgantt_tooltip';
+import { setDate } from 'ngx-bootstrap/chronos/utils/date-setters';
+import { getDate } from 'ngx-bootstrap/chronos/utils/date-getters';
+declare let gantt: any;
 
 @Component({
   selector: 'app-home',
@@ -38,12 +45,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isfirst = true;
   subscriptions: Subscription[] = [];
   modalRef: BsModalRef;
-
+  events = [];
+  eventid: any;
   @ViewChild('inputdeptRef') inputdeptElementRef: ElementRef;
+  @ViewChild('gantt_here') ganttContainer: ElementRef;
 
   constructor(private fb: FormBuilder,
     private projectService: ProjectsService,
     private msconfigService: MsconfigService,
+    private ganttService: GanttService,
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
@@ -73,6 +83,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     });
 
+    // Initialize gantt configurations
+    this.ganttInitialization();
+
     this.route.queryParams.forEach((params: Params) => {
       this.qdeptid = params['deptid'] || '';
       this.qcampid = params['campid'] || '';
@@ -93,6 +106,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
               this.datetable = [{date: '', dateStr: error}];
             } else {
               this.datetable = result;
+              const len = this.datetable.length;
+              this.setGanttDateInterval(this.datetable[0].date, this.datetable[len - 1].date);
               this.refreshTable(this.isfirst);
             }
           });
@@ -110,12 +125,105 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.inputdeptElementRef.nativeElement.focus();
   }
 
+  ganttInitialization(): void {
+    gantt.config.xml_date = '%d/%m/%Y';
+    gantt.config.columns = [
+      {name: 'id', align: 'left', label: '#', min_width: 20, width: 30, resize: true},
+      {name: 'department', label: 'Department', align: 'center', min_width: 50, width: 100, resize: true},
+      {name: 'camp', label: 'Camp', align: 'center', min_width: 50, width: 100, resize: true},
+      {name: 'project', label: 'Project', align: 'center', min_width: 50, width: 100, resize: true},
+      {name: 'numberofpeople', label: 'No. Of People', align: 'right', min_width: 50, width: 60, resize: true},
+    ];
+
+    gantt.config.scale_unit = 'day';
+    gantt.config.step = 1;
+    gantt.config.date_scale = '%D, %d';
+    gantt.config.subscales = [{ unit: 'month', step: 1, date: '%M, %Y'	}];
+
+    gantt.config.layout = {
+      css: 'gantt_container',
+      cols: [
+        {
+          width: 400,
+          min_width: 300,
+          rows: [
+            {view: 'grid', scrollX: 'gridScroll', scrollable: true, scrollY: 'scrollVer'},
+            {view: 'scrollbar', id: 'gridScroll', group: 'horizontal'}
+          ]
+        },
+        {resizer: true, width: 1},
+        {
+          rows: [
+            {view: 'timeline', scrollX: 'scrollHor', scrollY: 'scrollVer'},
+            {view: 'scrollbar', id: 'scrollHor', group: 'horizontal'}
+          ]
+        },
+        {view: 'scrollbar', id: 'scrollVer'}
+      ]
+    };
+  }
+
+  setGanttDateInterval(start, end): void {
+    gantt.config.start_date = new Date(start);
+    gantt.config.end_date = new Date(end);
+    gantt.templates.scale_cell_class = function(date) {
+      const pdate = new Date(date);
+      if (pdate.getDay() === 0 || pdate.getDay() === 6) {
+        return 'weekend';
+      }
+    };
+    gantt.templates.task_cell_class = function(item, date) {
+      const pdate = new Date(date);
+      if (pdate.getDay() === 0 || pdate.getDay() === 6) {
+        return 'weekend';
+      }
+    };
+    gantt.config.tooltip_hide_timeout = 2000;
+    // tslint:disable-next-line: no-shadowed-variable
+    gantt.templates.tooltip_text = (start, end, task: { project: string; }) => {
+      const result = new Date(end);
+      result.setDate(result.getDate() - 1);
+      // tslint:disable-next-line: max-line-length
+      return '<b>Task:</b> ' + task.project + '<br/><b>Start:</b> ' + this.msconfigService.formatStrDate(start) + '<br/><b>End:</b> ' + this.msconfigService.formatStrDate(result);
+    };
+    gantt.init(this.ganttContainer.nativeElement);
+      // defines the text inside the tak bars
+    gantt.templates.task_text = (_start, _end, task) => {
+        return `IN: ${task.firstnight} OUT: ${task.lastnight} --> ${task.duration} Nights`;
+    };
+
+    // detach all saved events
+    while (this.events.length) {
+      gantt.detachEvent(this.events.pop());
+    }
+
+    this.events.push(gantt.attachEvent('onTaskDblClick', (id, e) => {
+      if (id !== null) {
+        const dbid = gantt.getTask(id).uid;
+        this.goToEdit(dbid);
+      }
+    }));
+
+    this.events.push(gantt.attachEvent('onAfterTaskDrag', (id, mode, e) => {
+      if (mode === 'move' || mode === 'resize') {
+        const nwdate = gantt.getTask(id).start_date;
+        const objid = gantt.getTask(id).uid;
+        const projectid = gantt.getTask(id).project;
+        const duration = gantt.getTask(id).duration;
+        this.confirmUpdateTime(objid, projectid, nwdate, duration);
+      }
+    }));
+
+  }
+
   refreshDateColumn() {
     this.getHzDateTable(this.isfirst, (error, result) => {
       if (error) {
         this.datetable = [{date: '', dateStr: error}];
       } else {
         this.datetable = result;
+        const len = this.datetable.length;
+        this.setGanttDateInterval(this.datetable[0].date, this.datetable[len - 1].date);
         this.refreshTable(this.isfirst);
       }
     });
@@ -221,8 +329,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   fetchReport(formval, isinit) {
-    let fcastarray = [];
-    let message;
 
     this.loading = true;
     if (isinit) {
@@ -246,14 +352,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.totalrows = +data.totalcount;
         this.totalpage = data.npage;
         this.pgCounter = Math.floor((this.totalrows + 500 - 1) / 500);
-
-        this.projects.forEach( (element) => {
-          message = `IN: ${element.FirstNight} OUT: ${element.LastNight} -> ${element.NumberOfNights} Nights`;
-          fcastarray = this.constructProjectionDate(element.FirstNightDate, element.LastNightDate, message);
-          // add new object property in element obj
-          element['fcastarray'] = fcastarray;
+        // set the Gantt chart data
+        Promise.all([this.ganttService.getTasks(this.projects, gantt.config.types.project)])
+        .then(([dataTask]) => {
+          gantt.clearAll();
+          gantt.parse({data: dataTask});
         });
-
       }
     },
     err => {
@@ -356,53 +460,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     return result;
   }
 
-  constructProjectionDate(startdate, enddate, message): any[] {
-    let inputdate; let isForecastdate; let lastForecastel;
-    const result = []; let resultObjElement;
-    let cspan = 0;
-    const startdateRange = new Date(startdate);
-    const enddateRange = new Date(enddate);
-
-    this.datetable.forEach( (element, idx, arr) => {
-      isForecastdate = false;
-      inputdate = new Date(element.datetime);
-      isForecastdate = (inputdate.getTime() >= startdateRange.getTime()) && (inputdate.getTime() <= enddateRange.getTime()) ? true : false;
-      resultObjElement = null;
-      if (isForecastdate) {
-        cspan += 1;
-        lastForecastel = element;
-        if (idx === arr.length - 1) {
-          if (lastForecastel) {
-            resultObjElement = {
-              isfcast: true,
-              cspan: cspan,
-              message: message,
-            };
-            result.push(resultObjElement);
-            lastForecastel = null;
-          }
-        }
-      } else {
-        if (lastForecastel) {
-          resultObjElement = {
-            isfcast: true,
-            cspan: cspan,
-            message: message,
-          };
-          result.push(resultObjElement);
-          lastForecastel = null;
-        }
-        resultObjElement = {
-          isfcast: false,
-          cspan: 0,
-          message: '',
-        };
-        result.push(resultObjElement);
-      }
-    });
-    return result;
-  }
-
   goToEdit(id): void {
     // alert('edit this data: ' + id);
     this.subscriptions.push(
@@ -421,6 +478,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
         title: 'Edit Project',
         pid: id,
         data: {}
+      }
+    });
+  }
+
+  confirmUpdateTime(objid, projectid, startdate, duration): void {
+    this.subscriptions.push(
+      this.modalService.onHide.subscribe((reason: string) => {
+        // refresh table
+        this.refreshTable(this.isfirst);
+        this.unsubscribe();
+      })
+    );
+
+    this.modalRef = this.modalService.show(EditprojecttimeComponent, {
+      class: 'modal-dialog-centered',
+      keyboard: false,
+      backdrop: 'static',
+      initialState: {
+        objid: objid,
+        data: { projectid: projectid,
+          startdate: startdate,
+          duration: duration
+        }
       }
     });
   }

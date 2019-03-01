@@ -13,3 +13,18 @@ h1, h2, h3, h4 {
   width: 50%;
   height: 100%;
 }
+
+.gantthost{
+  display: block;
+  height: 390px;
+  position: relative;
+  width: 100%;
+}
+
+.weekend {
+  background-color: #686b68 !important;
+}
+
+.gantt_selected .weekend {
+  background-color: #f7eb91 !important;
+}

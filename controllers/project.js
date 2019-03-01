@@ -36,6 +36,40 @@ exports.updateproject = (pid, {
   });
 };
 
+exports.updateprojecttime = (pid, {
+  firstnightstr, lastnightstr,
+}, cb) => {
+  // || !firstnight || !lastnight
+  if (!pid || !firstnightstr || !lastnightstr) {
+    cb('Posted data is not correct or incompleted.', null);
+    return;
+  }
+  const query = {
+    _id: pid,
+  };
+  const stdate = new Date(firstnightstr);
+  const endate = new Date(lastnightstr);
+  const stdatestr = `${(`0${stdate.getDate()}`).slice(-2)}/${(`0${stdate.getMonth() + 1}`).slice(-2)}/${stdate.getFullYear()}`;
+  const endatestr = `${(`0${endate.getDate()}`).slice(-2)}/${(`0${endate.getMonth() + 1}`).slice(-2)}/${endate.getFullYear()}`;
+  const startdateUTC = config.formatUTCStartDate(stdate);
+  const enddateUTC = config.formatUTCEndDate(endate);
+
+  const doc = {
+    FirstNight: stdatestr,
+    LastNight: endatestr,
+    FirstNightDate: startdateUTC,
+    LastNightDate: enddateUTC,
+  };
+
+  Projects.findOneAndUpdate(query, doc, (err, raw) => {
+    if (err) {
+      cb(`Error processing request 101 ${err}`, null);
+      return;
+    }
+    cb(null, raw);
+  });
+};
+
 exports.getproject = (id, cb) => {
   Projects.findOne({ _id: id }).exec((err, project) => {
     if (err) {

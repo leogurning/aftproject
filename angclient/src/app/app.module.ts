@@ -15,6 +15,7 @@ import { FooterComponent } from './modules/root/components/footer/footer.compone
 import { ErrorpageComponent } from './modules/root/components/errorpage/errorpage.component';
 import { PagenotfoundComponent } from './modules/root/components/pagenotfound/pagenotfound.component';
 import { EditprojectdataComponent } from './modules/root/components/editprojectdata/editprojectdata.component';
+import { EditprojecttimeComponent } from './modules/root/components/editprojecttime/editprojecttime.component';
 
 /* Root routing module */
 import { AppRoutingModule } from './app-routing.module';
@@ -24,6 +25,7 @@ import { SharedModule } from './modules/shared/shared.module';
 
 /* Services Modules */
 import { ProjectsService } from './services/projects.service';
+import { GanttService } from './services/gantt.service';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,7 @@ import { ProjectsService } from './services/projects.service';
     ErrorpageComponent,
     PagenotfoundComponent,
     EditprojectdataComponent,
+    EditprojecttimeComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,9 +49,11 @@ import { ProjectsService } from './services/projects.service';
     ToastrService,
     ProjectsService,
     DatePipe,
+    GanttService
   ],
   entryComponents: [
-    EditprojectdataComponent
+    EditprojectdataComponent,
+    EditprojecttimeComponent
   ],
   bootstrap: [AppComponent]
 })
