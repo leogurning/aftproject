@@ -180,11 +180,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     };
     gantt.config.tooltip_hide_timeout = 2000;
     // tslint:disable-next-line: no-shadowed-variable
-    gantt.templates.tooltip_text = (start, end, task: { project: string; }) => {
+    gantt.templates.tooltip_text = (start, end, task: { project: string; duration: number}) => {
       const result = new Date(end);
       result.setDate(result.getDate() - 1);
       // tslint:disable-next-line: max-line-length
-      return '<b>Task:</b> ' + task.project + '<br/><b>Start:</b> ' + this.msconfigService.formatStrDate(start) + '<br/><b>End:</b> ' + this.msconfigService.formatStrDate(result);
+      return '<b>Project:</b> ' + task.project + '<br/><b>Start:</b> ' + this.msconfigService.formatStrDate(start) + '<br/><b>End:</b> ' + this.msconfigService.formatStrDate(result) + '<br/><b>Duration:</b> ' + task.duration + ' Nights';
     };
     gantt.init(this.ganttContainer.nativeElement);
       // defines the text inside the tak bars
